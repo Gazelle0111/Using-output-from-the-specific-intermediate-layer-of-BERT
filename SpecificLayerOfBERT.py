@@ -31,32 +31,24 @@ class myBERT(BertPreTrainedModel):
         return sequence_output, pooled_output
 
 
-def get_output_from_the_custom_BERT(args, tokenizer, _text):
-    myconfig = BertConfig.from_pretrained(
-            args.model_name_or_path,
-            num_hidden_layers=args.num_hidden_layers
-        )
-
-    model = myBERT.from_pretrained(args.model_name_or_path, config=myconfig)
-
-    _bert_processed_input = tokenizer(_text, return_tensors='pt')
-
-    sequence_output, pooled_output = model(_bert_processed_input)
-
-    return sequence_output, pooled_output
-
 def main(args):
     if args.num_hidden_layers > 12:
         print("******From the 1st layer to the 12th layer of the custom BERT would be replaced with to the pre-trained BERT layer while from the 13th layer would be randomly initialized.")
 
     sample_text = """Officials are set to announce details of B.C.'s latest restart plan on Tuesday as daily case counts continue to trend downward and hours after the last round of "circuit breaker" restrictions expired."""
+    
     tokenizer = BertTokenizerFast.from_pretrained(args.model_name_or_path)
+    
+    myconfig = BertConfig.from_pretrained(
+            args.model_name_or_path,
+            num_hidden_layers=args.num_hidden_layers
+        )
+    
+    model = myBERT.from_pretrained(args.model_name_or_path, config=myconfig)
+    
+    _bert_processed_input = tokenizer(sample_text, return_tensors='pt')
 
-    sequence_output, pooled_output = get_output_from_the_custom_BERT(args, tokenizer, sample_text)
-
-    print(sequence_output)
-    print()
-    print(pooled_output)
+    sequence_output, pooled_output = model(_bert_processed_input)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
