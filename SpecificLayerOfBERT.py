@@ -2,16 +2,16 @@ import argparse
 import torch
 from transformers import BertConfig, BertModel, BertTokenizerFast, BertForSequenceClassification, AdamW, BertPreTrainedModel
 
-class adoptedBERT(BertPreTrainedModel):
+class importedBERT(BertPreTrainedModel):
     def __init__(self, config):
-        super(adoptedBERT, self).__init__(config)
+        super(importedBERT, self).__init__(config)
         self.bert = BertModel(config=config)
 
 class myBERT(BertPreTrainedModel):
     def __init__(self, config):
         super(myBERT, self).__init__(config)
-        self.adoptedConfig = BertConfig.from_pretrained(args.model_name_or_path)
-        self.adoptedBERT = adoptedBERT.from_pretrained(args.model_name_or_path, config=self.adoptedConfig)
+        self.importedConfig = BertConfig.from_pretrained(args.model_name_or_path)
+        self.importedBERT = importedBERT.from_pretrained(args.model_name_or_path, config=self.importedConfig)
 
         self.bert = BertModel(config=config)
 
@@ -21,10 +21,10 @@ class myBERT(BertPreTrainedModel):
             layers_to_replace = [x for x in range(config.num_hidden_layers)]
 
         for layer in layers_to_replace:
-            self.bert.base_model.encoder.layer[layer] = self.adoptedBERT.base_model.encoder.layer[layer]
+            self.bert.base_model.encoder.layer[layer] = self.importedBERT.base_model.encoder.layer[layer]
 
-        del self.adoptedBERT
-        del self.adoptedConfig
+        del self.importedBERT
+        del self.importedConfig
 
     def forward(self, _input):
         sequence_output, pooled_output = self.bert(**_input)
