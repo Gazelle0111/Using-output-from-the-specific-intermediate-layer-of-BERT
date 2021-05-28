@@ -16,6 +16,7 @@ class myBERT(BertPreTrainedModel):
         self.bert = BertModel(config=config)
 
         if args.num_hidden_layers > 12:
+            print("******From the 1st layer to the 12th layer of the custom BERT would be replaced with to the pre-trained BERT layer while from the 13th layer would be randomly initialized.")
             layers_to_replace = [x for x in range(12)]
         else:
             layers_to_replace = [x for x in range(config.num_hidden_layers)]
@@ -32,9 +33,6 @@ class myBERT(BertPreTrainedModel):
 
 
 def main(args):
-    if args.num_hidden_layers > 12:
-        print("******From the 1st layer to the 12th layer of the custom BERT would be replaced with to the pre-trained BERT layer while from the 13th layer would be randomly initialized.")
-
     sample_text = """Officials are set to announce details of B.C.'s latest restart plan on Tuesday as daily case counts continue to trend downward and hours after the last round of "circuit breaker" restrictions expired."""
     
     tokenizer = BertTokenizerFast.from_pretrained(args.model_name_or_path)
