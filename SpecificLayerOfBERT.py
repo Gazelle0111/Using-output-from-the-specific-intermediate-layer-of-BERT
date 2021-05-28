@@ -62,7 +62,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--model_name_or_path", default="bert-base-uncased", type=str, help="Specific pretrained BERT model.")
-    parser.add_argument("--num_hidden_layers", default=1, type=int, help="Number of hidden layers that will be used for custom BERT")
+    parser.add_argument("--num_hidden_layers", default=1, type=int, help="Number of hidden layers that will be used for custom BERT.")
 
     args = parser.parse_args()
 
