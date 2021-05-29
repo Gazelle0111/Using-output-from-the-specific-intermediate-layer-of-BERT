@@ -1,6 +1,6 @@
 import argparse
 import torch
-from transformers import BertConfig, BertModel, BertTokenizerFast, BertForSequenceClassification, AdamW, BertPreTrainedModel
+from transformers import BertConfig, BertModel, BertPreTrainedModel
 
 class importedBERT(BertPreTrainedModel):
     def __init__(self, config):
@@ -8,7 +8,7 @@ class importedBERT(BertPreTrainedModel):
         self.bert = BertModel(config=config)
 
 class myBERT(BertPreTrainedModel):
-    def __init__(self, config):
+    def __init__(self, config, args):
         super(myBERT, self).__init__(config)
         self.importedConfig = BertConfig.from_pretrained(args.model_name_or_path)
         self.importedBERT = importedBERT.from_pretrained(args.model_name_or_path, config=self.importedConfig)
@@ -30,30 +30,3 @@ class myBERT(BertPreTrainedModel):
     def forward(self, _input):
         sequence_output, pooled_output = self.bert(**_input)
         return sequence_output, pooled_output
-
-
-def main(args):
-    sample_text = """Officials are set to announce details of B.C.'s latest restart plan on Tuesday as daily case counts continue to trend downward and hours after the last round of "circuit breaker" restrictions expired."""
-    
-    tokenizer = BertTokenizerFast.from_pretrained(args.model_name_or_path)
-    
-    myconfig = BertConfig.from_pretrained(
-            args.model_name_or_path,
-            num_hidden_layers=args.num_hidden_layers
-        )
-    
-    model = myBERT.from_pretrained(args.model_name_or_path, config=myconfig)
-    
-    _bert_processed_input = tokenizer(sample_text, return_tensors='pt')
-
-    sequence_output, pooled_output = model(_bert_processed_input)
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument("--model_name_or_path", default="bert-base-uncased", type=str, help="Specific pretrained BERT model.")
-    parser.add_argument("--num_hidden_layers", default=1, type=int, help="Number of hidden layers that will be used for custom BERT.")
-
-    args = parser.parse_args()
-
-    main(args)
