@@ -1,6 +1,6 @@
 import argparse
 from transformers import BertConfig, BertTokenizerFast
-import SpecificLayerOfBERT as spBERT
+import customBERT as csBERT
 
 
 def main(args):
@@ -13,7 +13,7 @@ def main(args):
             num_hidden_layers=args.num_hidden_layers
         )
     
-    model = spBERT.myBERT.from_pretrained(args.model_name_or_path, config=myconfig, args=args)
+    model = csBERT.myBERT.from_pretrained(args.model_name_or_path, config=myconfig, args=args)
     
     _bert_processed_input = tokenizer(sample_text, return_tensors='pt')
 
